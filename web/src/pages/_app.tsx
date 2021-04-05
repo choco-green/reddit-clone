@@ -2,7 +2,7 @@ import { ChakraProvider } from "@chakra-ui/react";
 import { Provider, createClient, dedupExchange, fetchExchange } from "urql";
 import { cacheExchange, QueryInput, Cache } from "@urql/exchange-graphcache";
 import theme from "../theme";
-import { MeDocument, LoginMutation, MeQuery, Query, RegisterMutation } from "../generated/graphql";
+import { MeDocument, LoginMutation, MeQuery, Query, RegisterMutation, LogoutMutation } from "../generated/graphql";
 
 function betterUpdateQuery<Result, Query>(
 	cache: Cache,
@@ -23,6 +23,11 @@ const client = createClient({
 		cacheExchange({
 			updates: {
 				Mutation: {
+					logout: (_result, args, cache, info) => {
+						betterUpdateQuery<LogoutMutation, MeQuery>(cache, { query: MeDocument }, _result, () => ({
+							me: null,
+						}));
+					},
 					login: (_result, args, cache, info) => {
 						betterUpdateQuery<LoginMutation, MeQuery>(
 							cache,
@@ -37,7 +42,7 @@ const client = createClient({
 							}
 						);
 					},
-          register: (_result, args, cache, info) => {
+					register: (_result, args, cache, info) => {
 						betterUpdateQuery<RegisterMutation, MeQuery>(
 							cache,
 							{ query: MeDocument },
