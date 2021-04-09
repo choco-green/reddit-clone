@@ -1,7 +1,6 @@
 import { ApolloClient, InMemoryCache } from "@apollo/client";
-import { ChakraProvider } from "@chakra-ui/react";
+import { withApollo: createWithApollo } from "next-apollo";
 import { PaginatedPosts } from "../generated/graphql";
-import theme from "../theme";
 
 const client = new ApolloClient({
 	uri: "http://localhost:4000/graphql",
@@ -26,12 +25,4 @@ const client = new ApolloClient({
 	}),
 });
 
-function MyApp({ Component, pageProps }: any) {
-	return (
-		<ChakraProvider resetCSS theme={theme}>
-			<Component {...pageProps} />
-		</ChakraProvider>
-	);
-}
-
-export default MyApp;
+export const withApollo = createWithApollo(ApolloClient)
